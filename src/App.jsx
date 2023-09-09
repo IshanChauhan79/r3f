@@ -1,62 +1,79 @@
 import { useRef } from "react";
-import { extend, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { CustomObjects } from "./Components/CustomObjects";
-
-extend({ OrbitControls });
+import {
+  OrbitControls,
+  TransformControls,
+  PivotControls,
+  Html,
+  Text,
+  Float,
+  MeshReflectorMaterial,
+} from "@react-three/drei";
+import "./App.css";
 
 const App = () => {
-  const { camera, gl } = useThree();
-  const groupMesh = useRef(null);
   const squareMesh = useRef(null);
-
-  useFrame((state, delta) => {
-    // const { elapsedTime } = state.clock;
-    squareMesh.current.rotation.y += delta;
-    // state.camera.position.x = Math.sin(elapsedTime) * 8;
-    // state.camera.position.z = Math.cos(elapsedTime) * 8;
-    // state.camera.lookAt(0, 0, 0);
-  });
+  const sphereMesh = useRef(null);
 
   return (
     <>
-      <orbitControls args={[camera, gl.domElement]} />
-
+      <OrbitControls makeDefault />
       <ambientLight />
       <directionalLight position={[1, 2, 3]} intensity={1.5} />
 
-      <CustomObjects />
+      {/* <CustomObjects /> */}
+      {/* <orbitControls args={[camera, gl.domElement]} /> */}
 
-      <group ref={groupMesh}>
-        <mesh position-x={-2}>
-          {/* <sphereGeometry args={[1.5, 32, 32]} /> */}
-          {/* <meshBasicMaterial color="orange" /> */}
+      <PivotControls
+        anchor={[0, 0, 0]}
+        depthTest={false}
+        lineWidth={2}
+        axisColors={["#ff0000", "#00ff00", "#0000ff"]}
+        scale={200}
+        fixed={true}
+      >
+        <mesh position-x={-2} ref={sphereMesh}>
           <sphereGeometry />
           <meshStandardMaterial color="orange" />
+          <Html
+            position={[1, 1, 0]}
+            wrapperClass="label"
+            center
+            distanceFactor={0.01}
+            occlude={[sphereMesh]}
+          >
+            using DREI helpers
+          </Html>
         </mesh>
-        <mesh
-          ref={squareMesh}
-          // position={[2, 0, 0]}
-          position-x={2}
-          rotation-y={Math.PI * 0.25}
-          scale={1.5}
-        >
-          <boxGeometry />
-          <meshStandardMaterial
-            color="mediumpurple"
-            // wireframe
-          />
-        </mesh>
-      </group>
-      <mesh scale={10} rotation-x={-Math.PI * 0.5} position-y={-1}>
-        <planeGeometry />
-        <meshStandardMaterial color="greenyellow" />
+      </PivotControls>
+      <mesh ref={squareMesh} position-x={2} scale={1.5}>
+        <boxGeometry />
+        <meshStandardMaterial color="mediumpurple" />
       </mesh>
+      <TransformControls object={squareMesh} />
 
-      {/* <mesh position={[4, 0, 0]}>
-        <torusKnotGeometry />
-        <meshNormalMaterial />
-      </mesh> */}
+      <mesh position-y={-1.2} rotation-x={-Math.PI * 0.5} scale={10}>
+        <planeGeometry />
+        <MeshReflectorMaterial
+          resolution={512}
+          blur={[1000, 1000]}
+          mixBlur={1}
+          mirror={0.5}
+          // color="greenyellow"
+        />
+      </mesh>
+      <Float speed={5} floatIntensity={5}>
+        <Text
+          font="./bangers-v20-latin-regular.woff"
+          fontSize={0.6}
+          color="salmon"
+          position-y={2}
+          maxWidth={2}
+          textAlign="center"
+        >
+          I LOVE R3F
+          {/* <meshNormalMaterial /> */}
+        </Text>
+      </Float>
     </>
   );
 };
