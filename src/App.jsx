@@ -10,9 +10,12 @@ const App = () => {
   const groupMesh = useRef(null);
   const squareMesh = useRef(null);
 
-  useFrame((state, elapsedTime) => {
-    squareMesh.current.rotation.y += elapsedTime;
-    // groupMesh.current.rotation.y += elapsedTime;
+  useFrame((state, delta) => {
+    // const { elapsedTime } = state.clock;
+    squareMesh.current.rotation.y += delta;
+    // state.camera.position.x = Math.sin(elapsedTime) * 8;
+    // state.camera.position.z = Math.cos(elapsedTime) * 8;
+    // state.camera.lookAt(0, 0, 0);
   });
 
   return (
