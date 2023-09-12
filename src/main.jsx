@@ -1,12 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { Leva } from "leva";
 import App from "./App.jsx";
 import "./index.css";
-import { Canvas } from "@react-three/fiber";
-import * as THREE from "three";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <Leva collapsed />
     <Canvas
+      shadows={false}
       gl={{
         antialias: true,
         toneMapping: THREE.ACESFilmicToneMapping,
@@ -20,6 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         position: [-4, 3, 6],
       }}
     >
+      {/* <color attach="background" args={["red"]} /> */}
       <App />
     </Canvas>
   </React.StrictMode>
