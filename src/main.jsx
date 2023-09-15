@@ -10,10 +10,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Leva collapsed />
     <Canvas
-      shadows={false}
+      shadows={true}
       gl={{
         antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
+        // toneMapping: THREE.ACESFilmicToneMapping,
         // toneMapping: THREE.CineonToneMapping,
         outputColorSpace: THREE.SRGBColorSpace,
       }}
