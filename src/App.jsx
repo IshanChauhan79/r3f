@@ -1,18 +1,39 @@
-import { OrbitControls } from "@react-three/drei";
+import {
+  Center,
+  OrbitControls,
+  Text3D,
+  useMatcapTexture,
+} from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
-import { Suspense } from "react";
-// import FlightHelmet from "./Components/Models/FlightHelmet";
-import Placeholder from "./Components/Models/Placeholder";
-import Burger from "./Components/Models/Burger";
-import Fox from "./Components/Models/Fox";
-import Xiao from "./Components/Models/Xiao";
+import { useEffect, useRef } from "react";
+import { MeshMatcapMaterial, SRGBColorSpace, TorusGeometry } from "three";
+
+const geometry = new TorusGeometry(1, 0.6, 16, 32);
+const material = new MeshMatcapMaterial();
 
 export default function Experience() {
-  // const modeluseGLTF
+  const donutsRef = useRef([]);
+  console.log("🚀 ~ file: App.jsx:16 ~ Experience ~ donutsRef:", donutsRef);
+  const [matcapTexture] = useMatcapTexture("7B5254_E9DCC7_B19986_C8AC91", 256);
+
+  const donutArray = [...Array(100)];
+
+  useEffect(() => {
+    matcapTexture.colorSpace = SRGBColorSpace;
+    matcapTexture.needsUpdate = true;
+    material.matcap = matcapTexture;
+    material.needsUpdate = true;
+  }, []);
+  useFrame((state, delta) => {
+    donutsRef.current.forEach((donut) => {
+      donut.rotation.y += delta * 0.2;
+    });
+  });
 
   return (
     <>
-      <color args={["#000000"]} attach="background" />
+      {/* <color args={["#000000"]} attach="background" /> */}
       <Perf position="top-left" />
       <OrbitControls makeDefault />
       <directionalLight
@@ -22,51 +43,40 @@ export default function Experience() {
         shadow-normalBias={0.04}
       />
       <ambientLight intensity={1} />
-      <mesh
-        receiveShadow
-        position-y={-1}
-        rotation-x={-Math.PI * 0.5}
-        scale={10}
-      >
-        <planeGeometry />
-        <meshStandardMaterial color="greenyellow" />
-      </mesh>
-      <Suspense
-        fallback={
-          <Placeholder position-x={-1} position-y={1} scale={[2, 4, 2]} />
-        }
-      >
-        <Xiao scale={0.2} position-y={-1} position-x={-1} />
-      </Suspense>
-
-      <Suspense
-        fallback={
-          <Placeholder position-x={2} position-y={0.5} scale={[2, 3, 2]} />
-        }
-      >
-        {/* <FlightHelmet /> */}
-        <Burger scale={0.35} position-x={2} />
-      </Suspense>
-
-      <Suspense
-        fallback={
-          <Placeholder position-x={-3.5} position-y={0.5} scale={[1, 3, 4]} />
-        }
-      >
-        <Fox scale="0.03" position-y={-1} position-x={-3.5} />
-      </Suspense>
+      <Center>
+        <Text3D
+          font="./fonts/helvetiker_regular.typeface.json"
+          size={0.75}
+          height={0.2}
+          curveSegments={12}
+          bevelEnabled
+          bevelThickness={0.02}
+          bevelSize={0.02}
+          bevelOffset={0}
+          bevelSegments={5}
+        >
+          Hello R3F
+          <meshMatcapMaterial matcap={matcapTexture} />
+        </Text3D>
+      </Center>
+      <torusGeometry args={[1, 0.6, 16, 32]} />
+      {donutArray.map((v, i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            donutsRef.current[i] = el;
+          }}
+          position={[
+            (Math.random() - 0.5) * 20,
+            (Math.random() - 0.5) * 20,
+            (Math.random() - 0.5) * 20,
+          ]}
+          scale={0.2 + Math.random() * 0.2}
+          rotation={[Math.random() * Math.PI, Math.random() * Math.PI, 0]}
+          geometry={geometry}
+          material={material}
+        />
+      ))}
     </>
   );
-}
-
-{
-  /* <mesh castShadow position-x={ - 2 }>
-<sphereGeometry />
-<meshStandardMaterial color="orange" />
-</mesh>
-
-<mesh castShadow position-x={ 2 } scale={ 1.5 }>
-<boxGeometry />
-<meshStandardMaterial color="mediumpurple" />
-</mesh> */
 }
