@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       shadows={true}
       gl={{
         antialias: true,
-        // toneMapping: THREE.ACESFilmicToneMapping,
+        toneMapping: THREE.ACESFilmicToneMapping,
         // toneMapping: THREE.CineonToneMapping,
         outputColorSpace: THREE.SRGBColorSpace,
       }}
